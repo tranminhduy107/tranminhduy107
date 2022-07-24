@@ -1,0 +1,106 @@
+sudo apt install apache2
+sudo apt install bind9
+sudo ufw app list
+sudo ufw allow 'Apache'
+sudo systemctl status apache2
+sudo systemctl restart apache2
+sudo mkdir /var/www/intranet (www/intranet/ là đường dẫn đề kiu)
+cd /etc/apache2/sites-available/
+sudo cp 000-default.conf ./intranet.vluteskill.net.conf
+sudo nano intranet.vluteskill.net.conf
+
+<VirtualHost *:8080>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        ServerName intranet.vluteskill.net
+        ServerAlias www.vluteskill.net
+        DocumentRoot /var/www/intranet
+
+
+sudo chmod -R 777 /var/www/intranet
+cd /var/www/intranet
+touch index.html
+nano index.html
+
+<html>
+    <head>
+        <title>Welcome to Your_domain!</title>
+    </head>
+    <body>
+        <h1>Success!  The your_domain virtual host is working!</h1>
+    </body>
+</html>
+
+cd
+sudo a2ensite intranet.vluteskill.net.conf
+sudo a2dissite 000-default.conf
+sudo systemctl restart apache2
+sudo systemctl status apache2
+
+
+//Xem ip và cổng mạng (ens33 192.168.56.100)
+ip a  
+
+Sửa file options: sudo nano /etc/bind/named.conf.options
+Xóa mấy dấu // + sửa IP thành IP máy:
+
+	         forwarders {
+                192.168.56.100;
+           };
+//thêm zone
+	
+
+zone "intranet.vluteskill.net" IN {
+	type master; 
+	file "/etc/bind/db.intranet"; 
+};
+
+zone "56.168.192.in-addr.arpa" IN {
+	type master; 
+	file "/etc/bind/db.192"; 
+};
+
+sudo cp /etc/bind/db.local /etc/bind/db.intranet
+sudo cp /etc/bind/db.127 /etc/bind/db.192
+sudo nano /etc/bind/db.intranet
+  
+   localhost. -> intranet.vluteskill.net
+   root.localhost. -> root.intranet.vluteskill.net
+   dòng IN NS có lacalhost. ->  ns.intranet.vluteskill.net
+   dòng IN A đổi lại ip cần phân giải ->  192.168.56.100  
+   Xóa dòng AAA
+   Xuống hàng cuối thêm dòng này vào: ns      IN      A       192.168.56.100
+
+sudo nano /etc/bind/db.192
+ 
+    localhost. -> ns.intranet.vluteskill.net
+    root.localhost. -> root.intranet.vluteskill.net
+    dòng IN NS có lacalhost. ->  ns.
+    dòng 1.0.0   IN      PTR     localhost.  đổi lại thành   100     IN      PTR     ns.intranet.vluteskill.net.
+
+
+Sửa file resolv: (nameserver: IP máy + options: cổng kêu nhớ ở bước đầu): sudo nano /etc/resolv.conf
+
+ 	nameserver 192.168.56.100
+	options ens33 trust-ad
+	search .
+
+
+
+
+
+
+
+
+
+
+
+

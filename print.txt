@@ -1,0 +1,73 @@
+sudo apt update
+
+#cài đặt và cấu hình dịch vụ samba server(nếu chưa cài đặt):
+
+sudo apt install net-tools
+sudo apt install tasksel
+sudo tasksel install samba-server
+sudo apt install samba
+sudo nano /etc/samba/smb.conf
+
+Tìm và sửa lại các dòng sau:
+[global]
+workgroup = WORKGROUP
+security =user
+
+
+[printers]
+  comment = All Printers
+  browseable = yes
+  path = /var/spool/samba
+  printable = yes
+  guest ok = yes
+  read only = yes
+  create mask = 0700
+
+sudo systemctl restart smbd.service nmbd.service
+sudo systemctl status smbd.service nmbd.service
+sudo apt install cups 
+sudo systemctl start cups
+sudo systemctl status cups
+sudo systemctl enable cups
+sudo cp /etc/cups/cupsd.conf /etc/cups/cupsd.conf.copy
+
+# Only listen for connections from the local machine.
+Port 631
+Listen /run/cups/cups.sock
+
+# Show shared printers on the local network.
+Browsing On
+BrowseLocalProtocols dnssd
+
+# Restrict access to the server...
+<Location />
+  Order allow,deny
+  Allow all
+</Location>
+# Restrict access to the admin pages...
+<Location /admin>
+  Order allow,deny
+  Allow all
+</Location>
+# Restrict access to configuration files...
+<Location /admin/conf>
+  AuthType Default
+  Allow all
+  Require user @SYSTEM
+  Order allow,deny
+  Allow all
+</Location>
+
+sudo systemctl restart cups
+
+tra ip máy mình
+Mở trình duyệt web gõ ip máy: 192.168.56.100:631/admin
+Vào trang admin nhấn add printer -> Bấm Advanced -> Bấm Accept the Risk ang Continue -> Sau đó bấm lại add printer
+Rồi nhập tài khoản mật khẩu lúc đầu đăng nhập(Tài khoản Ubuntu)
+Chọn CUPS-BRF (Virtual Braille BRF Printer) -> Nhớ click chọn Share This Printer -> Chọn máy canon 
+Set default options -> page size chọn vào A4 -> Nhấn add printer 
+Vào client mở this pc lên gõ ip server vào \\192.168.56.100
+
+
+
+

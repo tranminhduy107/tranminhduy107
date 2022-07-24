@@ -1,0 +1,66 @@
+sudo apt-get update
+sudo apt install vsftpd
+sudo service vsftpd status
+
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.orig
+sudo apt-get install openssh-server openssh-client
+sudo systemctl start sshd
+sudo systemctl status sshd
+sudo ufw allow OpenSSH
+sudo ufw allow 20/tcp
+sudo ufw allow 21/tcp
+sudo ufw allow 40000:50000/tcp
+sudo ufw allow 990/tcp
+sudo ufw allow 35000:40000/tcp
+sudo ufw enable
+sudo ufw status
+sudo nano /etc/vsftpd.conf
+
+	anonymous_enable=NO
+  	local_enable=YES
+	write_enable=YES
+	chroot_local_user=YES
+	allow_writeable_chroot=YES
+	pasv_min_port=35000
+	pasv_max_port=40000
+	userlist_enable=YES
+	userlist_file=/etc/vsftpd.userlist
+	userlist_deny=NO
+
+sudo adduser minhduy12345
+echo "minhduy12345" | sudo tee -a /etc/vsftpd.userlist
+sudo mkdir /home/minhduy12345/ftp
+sudo chown nobody:nogroup /home/minhduy12345/ftp
+sudo chmod a-w /home/minhduy12345/ftp
+sudo mkdir /home/minhduy12345/ftp/upload
+sudo chown minhduy12345:minhduy12345 /home/minhduy12345/ftp/upload
+sudo ls -al /home/minhduy12345/ftp
+echo "vsftpd test file" | sudo tee /home/minhduy12345/ftp/upload/test.txt
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+sudo nano /etc/vsftpd.conf
+
+
+đổi lại thành yes 
+ssl_enable=YES
+
+allow_anon_ssl=NO
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+ssl_tlsv1=YES
+ssl_sslv2=NO
+ssl_sslv3=NO
+require_ssl_reuse=NO
+ssl_ciphers=HIGH
+
+
+sudo systemctl restart vsftpd
+
+tải file zila về máy
+rồi kết nối ftp://192.168.56.100
+
+
+
+
+
+
+

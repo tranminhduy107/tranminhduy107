@@ -1,0 +1,52 @@
+sudo apt update
+sudo apt install mysql-server
+
+sudo mysql_secure_installation
+sudo mysql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'Admin12345';
+sudo mysql_secure_installation
+
+	Remove anonymous users? y
+	Disallow root login remotely? n
+	Remove test database and access to it? n
+	Reload privilege tables now?  y
+
+mysql -u root -p   hoặc sudo mysql
+
+	mysql> select user, authentication_string,plugin from mysql.user;
+	mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'sv12345@';
+	mysql> FLUSH PRIVILEGES;
+	mysql> exit
+
+test lại tk root mới đổi mk: sudo mysql -u root -p
+mk là: sv12345@
+
+	mysql>show databases;
+	mysql>exit
+
+systemctl status mysql.service
+
+*Cài mysql worbench trong ubuntusoftware(sudo snap install mysql-workbench-community)
+*nhớ chọn permissions ,Bật Read, add, change, or remove saved passwords và ssh-keys 
+
+
+create database qltk;
+use qltk;
+
+create table dangnhap(
+acc_id INT primary key,
+username text(10),
+password text(20)
+);
+Insert into dangnhap values ('12', 'minhduy','12345');
+Insert into dangnhap values ('13', 'nguyengiap','12345');
+Insert into dangnhap values ('14', 'duchuy','12345');
+SELECT * FROM qltk.dangnhap; 
+
+
+###ghi chú thêm
+cài mysql worbench: sudo snap install mysql-workbench-community
++Tạo tài khoản user: CREATE USER 'vlute'@'localhost' IDENTIFIED BY 'Vl@12345';
++Cấp quyền cho tài khoản: GRANT ALL PRIVILEGES ON *.* TO 'vlute'@'localhost' WITH GRANT OPTION;
+
+

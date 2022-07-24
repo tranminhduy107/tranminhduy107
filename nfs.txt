@@ -1,0 +1,2 @@
+Cài đặt NFS cho máy server và máy client
+-Server: sudo apt install nfs-kernel-server

@@ -1,0 +1,13 @@
+Cài dịch vụ: sudo apt-get install isc-dhcp-server
+Mở file lên cấu hình: sudo nano /etc/dhcp/dhcpd.conf
+
+xóa # authoritative;
+	subnet 192.168.56.0 netmask 255.255.255.0 {
+  	range 192.168.56.150 192.168.56.220;
+  	option routers 192.168.56.100;
+  	option domain-name-servers 8.8.8.8;
+	}
+
+Khởi động lại: sudo systemctl restart isc-dhcp-server.service
+Hiển thị trạng thái: sudo systemctl status isc-dhcp-server.service
+Xem các máy đã nhận dhcp: dhcp-lease-list

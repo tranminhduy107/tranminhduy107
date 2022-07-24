@@ -1,0 +1,84 @@
+Edit -> Virtual network chỉnh card mạng lại thành .56
+CHỉnh ip trong ubuntu 
+ipv4: 192.168.56.112
+gateway trỏ về default router 192.168.56.2
+DNS vs router trỏ về 192.168.56.2
+
+
+//Sau khi cài dịch vụ nhớ đổi sang host only và chỉnh ip
+//Xem ip và cổng mạng (ens33 192.168.56.100)
+ip a  
+cập nhật: sudo apt-get update
+Cài bind9: sudo apt install bind9
+Sửa file options: sudo nano /etc/bind/named.conf.options
+Xóa mấy dấu // + sửa IP thành IP máy:
+
+	         forwarders {
+                192.168.56.100;
+           };
+Sửa file local: sudo nano /etc/bind/named.conf.options
+//thêm zone
+	
+zone "vluteskill.org" IN {
+	type master; 
+	file "/etc/bind/db.vluteskill"; 
+};
+
+zone "fast-provider.net" IN {
+	type master; 
+	file "/etc/bind/db.fast"; 
+};
+
+zone "56.168.192.in-addr.arpa" IN {
+	type master; 
+	file "/etc/bind/db.192"; 
+};
+
+Copy file local > file vluteskill của mình: sudo cp /etc/bind/db.local /etc/bind/db.vluteskill
+Copy file local > file fast của mình: sudo cp /etc/bind/db.local /etc/bind/db.fast
+Copy file .127 > file .192 của mình: sudo cp /etc/bind/db.127 /etc/bind/db.192
+Sửa file vluteskill: sudo nano /etc/bind/db.vluteskill
+  
+   localhost. -> vluteskill.org
+   root.localhost. -> root.vluteskill.org
+   dòng IN NS có lacalhost. ->  ns.vluteskill.org
+   dòng IN A đổi lại ip cần phân giải ->  192.168.56.112  
+   Xóa dòng AAA
+   Xuống hàng cuối thêm dòng này vào: ns      IN      A       192.168.56.112
+
+Sửa file fast: sudo nano /etc/bind/db.fast
+  
+   localhost. -> fast-provider.net
+   root.localhost. -> root.fast-provider.net
+   dòng IN NS có lacalhost. ->  ns.fast-provider.net
+   dòng IN A đổi lại ip cần phân giải ->  192.168.56.113  
+   Xóa dòng AAA
+   Xuống hàng cuối thêm dòng này vào: ns      IN      A       192.168.56.113
+
+Sửa file .192:  sudo nano /etc/bind/db.192
+ 
+    localhost. -> ns.vluteskill.org
+    root.localhost. -> root.vluteskill.org
+    dòng IN NS có lacalhost. ->  ns.
+    dòng 1.0.0   IN      PTR     localhost.  đổi lại thành   112     IN      PTR     ns.vluteskill.org.
+    Thêm 1 dòng này dô nữa: 113     IN      PTR     ns.fast-provider.net.
+
+
+
+Sửa file resolv: (nameserver: IP máy + options: cổng kêu nhớ ở bước đầu): sudo nano /etc/resolv.conf
+
+ 	nameserver 192.168.56.100
+	options ens33 trust-ad
+	search .
+
+
+Khởi động lại: sudo systemctl restart bind9
+test: nslookup vluteskill.org
+      nslookup fast-provider.net
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+*Đổi tên máy
+sudo hostnamectl set-hostname Server-KNN-VLUTE
+
+*Thay đổi múi giờ: 
+sudo timedatectl set-timezones Asia/Ho_Chi_Minh
+
+* Cài bộ gõ tiếng việt ibus:
+
+sudo add-apt-repository ppa:bamboo-engine/ibus-bamboo
+sudo apt-get update
+sudo apt-get install ibus-bamboo
+// reset máy
+
+* Cài font chữ
+sudo apt-get -y install ttf-mscorefonts-installer
+font tahoma: https://freefontsfamily.com/tahoma-font-free/
+
+*Dùng lệnh cat tạo file txt: cat > KNN_VLUTE.txt 
+sau đó gõ nội dung r nhấn ctrl z để thoát
+
+
+//Copy the file KNN_VLUTE.txt into the following directories: K43, K44. Create 02 random files with blank content then copy to the K46 folder.
+          Lệnh copy:cp KNN_VLUTE.txt VLUTE/K44
+		       cp KNN_VLUTE.txt VLUTE/K43
+
+	Tạo 2 file trước: touch LopA.txt   touch LopB.txt
+	Copy 2 file vào thư mục K46: cp -r LopA.txt  VLUTE/K46       cp -r LopB.txt  VLUTE/K46
+
+
+Tạo người dùng: sudo adduser kt1 
+Tạo nhóm : sudo groupadd Accountant
+Thêm người dung vào nhóm: sudo usermod -a -G Accountant kt1
+Lệnh kiểm tra người dung và group: tail /etc/group
+Tạo thư mục: mkdir COMPANY
+Di chuyển đến thư mục: cd COMPANY/Accountant
+Tạo file: touch acc.sh
+Gán quyền cho thư mục: chmod -R 760 Manager 	r (read) = 4  w (write) = 2  x (execute) = 1  no permissions = 0 
+
+          Tạo file: touch ex_01.txt      touch ex_02.txt
+          Phân quyền 2 file:  chmod -R 766 ex_01.txt      chmod -R 766 ex_02.txt    
+          Thay đổi quyền owner thành rw:  chmod 664 ex_01.txt    
+          Kiểm tra kết quả: ls -l
+****Trao quyền cho user1 có quyền trên thư mục VLUTE
+sudo chown -R user1:G_Student /home/minhduy/VLUTE
+sudo chmod -R 764 VLUTE
+su - user1
+
+
+***Yêu cầu: Change the ownership in the other directory for the VLUTE group:
+•	Sudo chown -R username:groupname /tenthumuc
+Ví dụ: sudo chown -R user1:VLUTE /home/fit/KNN_SV/orther
+•	username: Nếu giữ nguyên thì không cần ghi
+Ví dụ: sudo chown -R :VLUTE /home/fit/KNN_SV/orther
+
+
+

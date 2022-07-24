@@ -1,0 +1,22 @@
+update:		sudo apt update
+Cài dịch vụ: sudo apt install samba
+Tạo folder share: mkdir /home/minhduy/chiase
+Mở file samba lên cấu hình: sudo gedit /etc/samba/smb.conf
+//pass vào hàng đầu tiên
+ 	[chiase]
+	comment = Tes Samba
+	path = /home/minhduy/chiase
+	read only = no
+	browsable = yes
+
+Khởi động lại dịch vụ: sudo service smbd restart
+Tường lửa: sudo ufw allow samba
+Đưa người dung vào nhóm samba (lấy tk lúc đăng nhập): sudo smbpasswd -a minhduy
+
+
+
+
+
+
+
+
